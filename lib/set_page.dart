@@ -3,9 +3,16 @@ import 'package:coursework_2/data/exercise.dart';
 import 'package:coursework_2/exercise_page.dart';
 import 'package:coursework_2/model/exercise.dart';
 import 'package:coursework_2/model/exercise_set.dart';
+import 'package:coursework_2/widgets/breath_widget.dart';
+import 'package:coursework_2/widgets/exercise_widget.dart';
+import 'package:coursework_2/widgets/set_progress_widget.dart';
+import 'package:coursework_2/widgets/slider_widget.dart';
+import 'package:coursework_2/widgets/switch_widget.dart';
+import 'package:coursework_2/widgets/timer_controllers_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/src/audio_cache.dart';
 
 class SetPage extends StatefulWidget {
   final ExerciseSet exerciseSet;
@@ -21,34 +28,57 @@ class _SetPageState extends State<SetPage> {
   late Timer _timer;
   num timeLeft = 5;
   num rounds = 1;
-  double value = 50;
+  double speedValue = 50;
   double roundsValue = 5;
   int _currentPageNo = 0;
   late final Exercise startExercise;
   bool _breath = false;
   bool isSwitched = false;
+  bool audioIsPlaying = false;
+  var audioPlayer = AudioPlayer();
+  var player= AudioCache();
 
   Duration setDuration(String level) {
     switch (level) {
       case 'Beginner':
-        return Duration(seconds: 10);
+        return Duration(seconds: 20);
       case 'Intermediate':
         return Duration(seconds: 25);
       case 'Advanced':
         return Duration(seconds: 30);
       default:
-        return Duration(seconds: 10);
+        return Duration(seconds: 20);
     }
+  }
+
+  void setSwitch(value) => setState(() {
+    isSwitched = value;
+  });
+
+  void setSpeedSlider(value) {
+    setState(() {
+      speedValue = value;
+      timeLeft = value;
+    });
+  }
+
+  void setRounds(value) {
+    setState(() {
+      roundsValue = value;
+      rounds = value;
+    });
   }
 
   void gotoNextPage() {
     setState(() {
+      timeLeft = speedValue;
       if (_currentPageNo == (exercises.length - 1)) {
         _currentPageNo = 0;
       } else {
         _currentPageNo++;
       }
-      _startCounter();
+      _stopAudio();
+      _doExercise();
     });
   }
 
@@ -70,6 +100,40 @@ class _SetPageState extends State<SetPage> {
     return currentExercise;
   }
 
+  Future<void> _setAudio() async {
+    if(!audioIsPlaying){
+      audioPlayer = await player.play(getCurrentExercise().audioUrl);
+      if (!mounted) {
+        audioPlayer.dispose();
+        audioIsPlaying = false;
+      }
+      setState(() {
+          audioIsPlaying = true;
+        });
+        audioPlayer.onPlayerCompletion.listen((event) {
+          setState(() {
+            audioIsPlaying = false;
+          });
+        });
+    }else {
+      audioPlayer.stop();
+      setState(() {
+        audioIsPlaying = false;
+      });
+    }
+  }
+
+  Future<void> _stopAudio() async {
+      audioPlayer.stop();
+      setState(() {
+        audioIsPlaying = false;
+      });
+  }
+
+  void _doExercise(){
+    _setAudio();
+    _startCounter();
+  }
   void _startCounter() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
@@ -95,7 +159,10 @@ class _SetPageState extends State<SetPage> {
   }
 
   void _stopCounter() {
-    _timer.cancel();
+    if(_timer.isActive){
+      _timer.cancel();
+    }
+    _stopAudio();
     setState(() {
       _breath = false;
     });
@@ -104,22 +171,35 @@ class _SetPageState extends State<SetPage> {
   void _resetCounter() {
     setState(() {
       timeLeft = setDuration(widget.appBarTitle).inSeconds;
-      value = timeLeft.toDouble();
+      speedValue = timeLeft.toDouble();
       rounds = 1;
       _breath = false;
     });
-    _timer.cancel();
+    _stopAudio();
+    if(_timer.isActive){
+      _timer.cancel();
+    }
   }
 
   void _restartCounter() {
     setState(() {
-      timeLeft = value;
+      timeLeft = speedValue;
       _breath = false;
     });
-    _timer.cancel();
+    if(_timer.isActive){
+      _timer.cancel();
+    }
+  }
+
+  void _goHome() {
+    _stopCounter();
+    _stopAudio();
+    Navigator.of(context).pop();
   }
 
   void _previousExercise() {
+    _stopAudio();
+    _restartCounter();
     setState(() {
       if (_currentPageNo == 0) {
         _currentPageNo = 0;
@@ -130,6 +210,8 @@ class _SetPageState extends State<SetPage> {
   }
 
   void _nextExercise() {
+    _stopAudio();
+    _restartCounter();
     setState(() {
       if (_currentPageNo == (exercises.length - 1)) {
         _currentPageNo = (exercises.length - 1);
@@ -142,9 +224,10 @@ class _SetPageState extends State<SetPage> {
   @override
   void initState() {
     super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {_timer.cancel();});
     startExercise = exercises[0];
     timeLeft = setDuration(widget.appBarTitle).inSeconds;
-    value = timeLeft.toDouble();
+    speedValue = timeLeft.toDouble();
     rounds = 1;
     if (widget.appBarTitle.contains('Beginner')) {
       isSwitched = true;
@@ -160,7 +243,7 @@ class _SetPageState extends State<SetPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 4,
+        length: 3,
         child: Container(
             decoration: BoxDecoration(
                 gradient: const LinearGradient(
@@ -178,6 +261,10 @@ class _SetPageState extends State<SetPage> {
             child: Scaffold(
                 backgroundColor: Colors.transparent,
                 appBar: AppBar(
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => _goHome(),
+                  ),
                   bottom: TabBar(
                       onTap: (int index) => _stopCounter(),
                       indicatorColor: Colors.white,
@@ -190,10 +277,6 @@ class _SetPageState extends State<SetPage> {
                         Tab(
                           icon: Icon(Icons.library_books),
                           text: "Info",
-                        ),
-                        Tab(
-                          icon: Icon(Icons.face),
-                          text: "Profile",
                         ),
                         Tab(
                           icon: Icon(Icons.settings),
@@ -212,13 +295,23 @@ class _SetPageState extends State<SetPage> {
                         exercise: getCurrentExercise(),
                         duration: getCurrentExercise().duration,
                         image: getCurrentExercise().imageUrl),
-                    const Text("Profile"),
                     GestureDetector(
                       onTap: () => _stopCounter(),
-                      child: buildSettings(),
+                      child: Column(
+                        children: [
+                          SliderWidget(actualValue: timeLeft, value: speedValue, setSlider: setSpeedSlider, min: 20, max: 50, divisions: 50, title: "Select Speed"),
+                          const SizedBox(height: 20),
+                          SliderWidget(actualValue: rounds, value: roundsValue, setSlider: setRounds, min: 1, max: 50, divisions: 50, title: "Select Rounds:"),
+                          const SizedBox(height: 20),
+                          SwitchWidget(isSwitched: isSwitched, setSwitch: setSwitch)
+                        ],
+                      ),
                     )
                   ],
-                ))));
+                )
+            )
+        )
+    );
   }
 
   Widget buildHome() => Center(
@@ -227,207 +320,25 @@ class _SetPageState extends State<SetPage> {
         children: [
           Row(
             children: [
-              Padding(
-                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.adjust_rounded,
-                            size: 20,
-                          ),
-                          SizedBox(width: 10),
-                          Text(rounds.round().toString(),
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.montserrat(fontSize: 16)),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.accessibility_rounded,
-                            size: 20,
-                          ),
-                          SizedBox(width: 10),
-                          Text('${_currentPageNo + 1}',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.montserrat(fontSize: 16)),
-                        ],
-                      )
-                    ],
-                  )),
+              SetProgressWidget(roundsString: rounds.round().toString(), currentPage: '${_currentPageNo +1 }'),
               if (_breath)
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 20, 40, 20),
-                    child: AnimatedTextKit(
-                      isRepeatingAnimation: false,
-                      totalRepeatCount: timeLeft.toInt(),
-                      repeatForever: false,
-                      animatedTexts: [
-                        ScaleAnimatedText('Breath In',
-                            scalingFactor: 0.8,
-                            duration: const Duration(seconds: 5),
-                            textStyle: const TextStyle(
-                                color: Colors.cyan, fontSize: 25),
-                            textAlign: TextAlign.center),
-                        ScaleAnimatedText(
-                          'Breath Out',
-                          scalingFactor: 0.8,
-                          duration: const Duration(seconds: 5),
-                          textStyle:
-                              const TextStyle(color: Colors.cyan, fontSize: 25),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ))
+                BreathingWidget(timeLeft: timeLeft)
             ],
           ),
-          buildExercise(),
+          ExerciseWidget(timeLeft: timeLeft, currentPageImage: getCurrentPageImage()),
           Container(
               width: MediaQuery.of(context).size.width * .65,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(13),
                   border: Border.all(color: Colors.black)),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      MaterialButton(
-                        onPressed: _stopCounter,
-                        child: const Icon(Icons.pause_circle_filled,
-                            color: Colors.black, size: 28),
-                      ),
-                      MaterialButton(
-                        onPressed: _startCounter,
-                        child: const Icon(Icons.not_started_outlined,
-                            color: Colors.black, size: 28),
-                      ),
-                      MaterialButton(
-                        onPressed: _resetCounter,
-                        child: const Icon(Icons.replay_circle_filled,
-                            color: Colors.black, size: 28),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MaterialButton(
-                        onPressed: _previousExercise,
-                        child: const Icon(Icons.skip_previous,
-                            color: Colors.black, size: 28),
-                      ),
-                      MaterialButton(
-                        onPressed: _nextExercise,
-                        child: const Icon(Icons.skip_next,
-                            color: Colors.black, size: 28),
-                      )
-                    ],
-                  )
-                ],
-              ))
-        ],
-      ));
-
-  Widget buildSettings() => Column(
-      children: [buildSpeedSlider(),
-        SizedBox(height: 20),
-        buildRoundsSlider(),
-        SizedBox(height: 20),
-        buildSwitch()],
-  ) ;
-
-  Widget buildSwitch() => Column(
-        children: [
-          Text("Breathing cues:",
-              textAlign: TextAlign.justify,
-              style:
-              GoogleFonts.montserrat(fontSize: 16)),
-          SizedBox(height: 10),
-          Switch.adaptive(
-            activeColor: Colors.blueAccent,
-            value: isSwitched,
-            onChanged: (value) => setState(() {
-              isSwitched = value;
-            }),
-          )
-        ],
-      );
-
-  Widget buildSpeedSlider() => SizedBox(
-          child: Column(
-        children: [
-          Padding(padding: EdgeInsets.all(20.0)),
-          Text("Select Speed:",
-              textAlign: TextAlign.justify,
-              style:
-              GoogleFonts.montserrat(fontSize: 16)),
-          SizedBox(height: 10),
-          Text(timeLeft.round().toString(),
-              textAlign: TextAlign.justify,
-              style:
-              GoogleFonts.montserrat(fontSize: 25)),
-          Slider(
-            value: value,
-            min: 10,
-            max: 50,
-            divisions: 50,
-            onChanged: (value) {
-              setState(() {
-                this.value = value;
-                timeLeft = value;
-              });
-            },
-            activeColor: Colors.blueAccent,
-            inactiveColor: Colors.blueGrey.shade100,
-            label: value.round().toString(),
+              child: TimerControllers(
+                  stopCounter: _stopCounter,
+                  doExercise: _doExercise,
+                  resetCounter: _resetCounter,
+                  previousExercise: _previousExercise,
+                  setAudio: _setAudio,
+                  nextExercise: _nextExercise)
           )
         ],
       ));
-
-  Widget buildRoundsSlider() => SizedBox(
-          child: Column(
-        children: [
-          Padding(padding: EdgeInsets.all(20.0)),
-          Text("Select Rounds:",
-              textAlign: TextAlign.justify,
-              style:
-              GoogleFonts.montserrat(fontSize: 16)),
-          SizedBox(height: 10),
-          Text(rounds.round().toString(),
-              textAlign: TextAlign.justify,
-              style:
-              GoogleFonts.montserrat(fontSize: 25)),
-          Slider(
-            value: roundsValue,
-            min: 1,
-            max: 50,
-            divisions: 50,
-            onChanged: (value) {
-              setState(() {
-                roundsValue = value;
-                rounds = value;
-              });
-            },
-            activeColor: Colors.blueAccent,
-            inactiveColor: Colors.blueGrey.shade100,
-            label: roundsValue.round().toString(),
-          )
-        ],
-      ));
-
-  Widget buildExercise() => Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * .45,
-            width: MediaQuery.of(context).size.width,
-            child: FittedBox(
-              child: Image.asset(getCurrentPageImage()),
-            ),
-          ),
-          Text(timeLeft == 0 ? 'CHANGE' : timeLeft.round().toString(),
-              style: const TextStyle(fontSize: 40)),
-        ],
-      );
 }

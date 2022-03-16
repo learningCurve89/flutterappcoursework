@@ -51,7 +51,7 @@ class GuidePage extends StatelessWidget {
                                 Icon(Icons.self_improvement_outlined),
                                 SizedBox(height: 20),
 
-                                Text('''To use this app go to the home page where you find the above icon. Tap on the level you prefer: Beginner, Intermediate, Advanced. This will bring you to the Set Page where you can start your exercises.
+                                Text('''To use this app go to the home page where you find the above icon. Tap on the level you prefer: Beginner, Intermediate, Advanced. This will bring you to the Set Page where you can start your exercises. In the Set Page you can zoom onto the image by pinching the screen.
                                 ''',
                                     textAlign: TextAlign.justify,
                                     style:

@@ -3,13 +3,13 @@ import 'package:coursework_2/model/exercise.dart';
 Duration setDuration(String level) {
   switch (level) {
     case 'Beginner':
-      return Duration(seconds: 10);
+      return Duration(seconds: 20);
     case 'Intermediate':
       return Duration(seconds: 25);
     case 'Advanced':
       return Duration(seconds: 30);
     default:
-      return Duration(seconds: 10);
+      return Duration(seconds: 20);
   }
 }
 
@@ -18,78 +18,128 @@ final exercises = [
   Exercise(
       id: 1,
       name: 'Pranamasana',
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 20),
       imageUrl: 'assets/images/starting.png',
+      audioUrl: 'audio/starting.mp3',
       description: '''
-      Stand at the edge of your mat, keep your feet together and balance your weight equally on both feet.
+      Pranamasana or ‘Anjali mudra’ is a gesture of reverence that is considered as a sign of respect and greeting in India. Pranamasana is just like ‘Namaste’. 
       
-      Expand your chest and relax your shoulders. As you breathe in, lift both arms up from the sides, and as you exhale, bring your palms together in front of the chest in a prayer position.
+      Benefits of Pranamasana: Relaxes the nervous system and helps in maintaining body balance. It also helps relieve stress and anxiety.
       '''),
   Exercise(
       id: 2,
       name: 'Hasta Uttanasana',
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 20),
       imageUrl: 'assets/images/pose1.png',
-      description: "Breathing in, lift the arms up and back, keeping the biceps close to the ears. In this pose, the effort is to stretch the whole body up from the heels to the tips of the fingers."),
+      audioUrl: 'audio/pose1.mp3',
+      description: '''The name originates from the Sanskrit word meaning upward tree. 
+      
+          Hasta uttanasana benefits people suffering from asthma. It helps to check backache, fatigue, and mild anxiety. This pose also improves digestion. Avoid looking up if you feel dizzy and don’t overstretch your arms if you experience pain during this surya namaskar pose.
+          
+          '''),
   Exercise(
       id: 3,
       name: 'Hasta Padasana',
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 20),
       imageUrl: 'assets/images/pose2.png',
-      description: "Breathing out, bend forward from the waist keeping the spine erect. As you exhale completely, bring the hands down to the floor beside the feet."),
+      audioUrl: 'audio/pose2.mp3',
+      description: '''
+      Make sure your spine does not bend. Keep your neck and shoulders relaxed. Press into your heels softly so weight is evenly distributed.
+      
+      Padasana helps in recovering from insomnia and osteoporosis. This step of surya namaskar relieves anxiety, stress, and headache. It strengthens thighs and knees, stretches hips, hamstrings and calves.
+      '''),
   Exercise(
       id: 4,
       name: 'Ashwa Sanchalanasana',
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 20),
       imageUrl: 'assets/images/pose3.png',
-      description: "Breathing in, push your right leg back, as far back as possible. Bring the right knee to the floor and look up."),
+      audioUrl: 'audio/pose3.mp3',
+      description: '''
+      Every yoga asana has its own health benefit. This Sun Salutation pose increases willpower. It strengthens the spine and increases lung capacity. 
+      
+      It stimulates the digestive system and tones kidney and liver. This Surya Namaskar step should not be practiced if you are suffering from a knee or neck injury.
+      '''),
   Exercise(
       id: 5,
       name: 'Chaturanga Dandasana',
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 20),
       imageUrl: 'assets/images/pose4.png',
-      description: "As you breathe in, take the left leg back and bring the whole body in a straight line"),
+      audioUrl: 'audio/pose4.mp3',
+      description: '''
+      Dandasana, the fifth step of surya namaskar tones the abdomen and helps build strength and endurance of arms, shoulders, and wrists.
+      
+      Don’t practice this Surya namaskar asana pose if you are suffering from severe low back pain or wrist injury.
+      '''),
   Exercise(
       id: 6,
       name: 'Ashtanga Namaskar',
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 20),
       imageUrl: 'assets/images/pose5.png',
-      description: "Gently bring your knees down to the floor and exhale. Take the hips back slightly, slide forward, rest your chest and chin on the floor. Raise your posterior a little bit. The two hands, two feet, two knees, chest and chin (eight parts of the body) should touch the floor."),
+      audioUrl: 'audio/pose5.mp3',
+      description: '''
+      Ashtanga Namaskara tones and strengthens the arms, shoulders, and legs. This surya namaskar pose releases tension around the neck and shoulder. It also improves the spine’s flexibility.
+      
+      Patients suffering from buttock injury, spinal pain or lower back pain should avoid this Surya namaskar step.
+      '''),
   Exercise(
       id: 7,
       name: 'Bhujangasana',
-      duration: const Duration(seconds: 10),
-      imageUrl: 'assets/images/pose6.png',
-      description: "Slide forward and raise the chest up into the Cobra pose. You may keep your elbows bent in this pose with the shoulders away from the ears. Look up at the ceiling."),
+      duration: const Duration(seconds: 20),
+      imageUrl: 'assets/images/pose7.png',
+      audioUrl: 'audio/pose6.mp3',
+      description: '''
+      Bhujangasana helps in strengthening the torso. It tones abdominal muscles and improves blood circulation. It helps during the menstrual cycle and cures backache and sciatica. 
+      
+      This asana is also therapeutic for asthma. In case you suffer stomach disorders like ulcer, hernia, back injury, hyperthyroidism, consult a doctor before practicing this Surya Namaskar pose.
+      '''),
   Exercise(
       id: 8,
       name: 'Adho Mukha Svanasana',
-      duration: const Duration(seconds: 10),
-      imageUrl: 'assets/images/pose7.png',
-      description: "Breathing out, lift the hips and the tailbone up to bring the body into an inverted ‘V’ pose."),
+      duration: const Duration(seconds: 20),
+      imageUrl: 'assets/images/pose8.png',
+      audioUrl: 'audio/pose7.mp3',
+      description: '''
+      This Surya Namaskar step has incredible health benefits. It improves blood circulation, calms the nerves, and relieves stress. For women,  It helps relieve symptoms of menopause, back pain, and headaches.
+      
+      This asana should not be performed by people who are suffering from diarrhea, eye or ear infection, or wrist injuries.
+      '''),
   Exercise(
       id: 9,
       name: 'Ashwa Sanchalanasana',
-      duration: const Duration(seconds: 10),
-      imageUrl: 'assets/images/pose8.png',
-      description: "Breathing in, bring the right foot forward in between the two hands. The left knee goes down on the floor. Press the hips down and look up."),
+      duration: const Duration(seconds: 20),
+      imageUrl: 'assets/images/pose10.png',
+      audioUrl: 'audio/pose8.mp3',
+      description: '''
+      As you complete the eighth step of Surya Namaskar, you will now have to repeat Ashva Sanchalanasana, Uttanasana, Uttana hastasana, and Pranamasana respectively.
+      
+      This Surya Namaskar step should not be practiced if you are suffering from a knee or neck injury.
+      '''),
   Exercise(
       id: 10,
       name: 'Hasta Padasana',
-      duration: const Duration(seconds: 10),
-      imageUrl: 'assets/images/pose9.png',
-      description: ""),
+      duration: const Duration(seconds: 20),
+      imageUrl: 'assets/images/pose11.png',
+      audioUrl: 'audio/pose9.mp3',
+      description: '''
+      Benefits include the stretching of the hamstrings and opens up the legs. It helps in curing insomnia, osteoporosis, headache, anxiety, and stress.
+      '''),
   Exercise(
       id: 11,
       name: 'Hasta Uttanasana',
-      duration: const Duration(seconds: 10),
-      imageUrl: 'assets/images/pose10.png',
-      description: "Breathing out, bring the left foot forward. Keep the palms on the floor. You may bend the knees, if necessary."),
+      duration: const Duration(seconds: 20),
+      imageUrl: 'assets/images/pose1.png',
+      audioUrl: 'audio/pose10.mp3',
+      description: '''
+      Avoid looking up if you feel dizzy and don’t overstretch your arms if you experience pain during this surya namaskar pose.
+      '''),
   Exercise(
       id: 12,
       name: 'Pranamasana',
-      duration: const Duration(seconds: 10),
-      imageUrl: 'assets/images/pose11.png',
-      description: "As you exhale, first straighten the body, then bring the arms down. Relax in this position and observe the sensations in your body."),
+      duration: const Duration(seconds: 20),
+      imageUrl: 'assets/images/pose12.png',
+      audioUrl: 'audio/pose11.mp3',
+      description: '''
+      As you complete the above 12 steps of Surya namaskar, one cycle of this asana is completed. To avail the maximum benefits of this yoga pose, start from 7 or 12 cycles of sun salutation per day to 21, 24, 54, or even 108 cycles as you master this technique with time.
+      '''),
 ];
 

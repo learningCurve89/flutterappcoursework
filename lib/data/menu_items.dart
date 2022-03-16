@@ -4,7 +4,8 @@ import 'package:coursework_2/model/menu_item.dart';
 class MenuItems{
   static const List<MenuItem> items = [
     itemAbout,
-    itemGuide
+    itemGuide,
+    itemContacts
   ];
 
 
@@ -15,6 +16,11 @@ class MenuItems{
   static const itemGuide = MenuItem(
       text: 'Guide',
       icon: Icons.arrow_forward
+  );
+
+  static const itemContacts = MenuItem(
+      text: 'Contacts',
+      icon: Icons.phone
   );
 
 }

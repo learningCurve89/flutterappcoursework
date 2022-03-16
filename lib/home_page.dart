@@ -1,4 +1,5 @@
 import 'package:coursework_2/about_page.dart';
+import 'package:coursework_2/contacts_page.dart';
 import 'package:coursework_2/data/sets.dart';
 import 'package:coursework_2/guide_page.dart';
 import 'package:coursework_2/set_page.dart';
@@ -112,6 +113,9 @@ class HomePage extends StatelessWidget {
         break;
       case MenuItems.itemGuide:
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => GuidePage()));
+        break;
+      case MenuItems.itemContacts:
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ContactsPage()));
         break;
     }
   }

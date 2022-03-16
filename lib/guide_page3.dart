@@ -25,7 +25,7 @@ class GuidePage3 extends StatelessWidget {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               actions: [
-                IconButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomePage())),
+                IconButton(onPressed: () async {int count = 0; Navigator.of(context).popUntil((_)=> count++>= 3);},
                     icon: Icon(Icons.home))
               ],
               elevation: 10,
@@ -42,6 +42,14 @@ class GuidePage3 extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Column(
                               children: [
+                                Text('20    Breath In/Out', style:
+                                GoogleFonts.montserrat(fontSize: 25)),
+                                SizedBox(height: 20),
+                                Text('''The number at the bottom of the picture show you how long you need to hold the pose. These times are pre-set depending on the level selected but you can edit them on the settings tab from the Set Page. The minimum time for a pose is 20 seconds. The breathing cues pulse to help you regulate your breathing. These are enabled for beginners but you can switch them on or off in the settings tab
+                                ''',
+                                    textAlign: TextAlign.justify,
+                                    style:
+                                    GoogleFonts.montserrat(fontSize: 16)),
                                 Text('Info and Settings tab:',
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.montserrat(
