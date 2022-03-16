@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
       },
       debugShowCheckedModeBanner: false,
-      title: 'Exercise App',
+      title: 'Surya Namaskar',
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
           textTheme: Theme.of(context).textTheme.apply(displayColor: Colors.cyanAccent)
